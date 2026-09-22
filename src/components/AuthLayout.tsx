@@ -29,11 +29,6 @@ export function AuthShell({ title, subtitle, children }: { title: string; subtit
         </div>
 
         <p className="relative z-10 text-xs text-[var(--color-bg)]/45">Researched from the open web. Nothing invented.</p>
-
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-[var(--color-accent)]/25 blur-[100px]"
-        />
       </aside>
 
       <main className="flex min-h-svh items-center justify-center px-4 py-12 sm:px-6">

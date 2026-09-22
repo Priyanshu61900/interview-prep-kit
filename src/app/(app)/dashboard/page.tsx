@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
-import { Trash, FileArrowUp, Sparkle, FolderOpen } from "@phosphor-icons/react";
+import { Trash, FolderOpen } from "@phosphor-icons/react";
 import { api, ApiClientError } from "@/lib/apiClient";
 import { Button, TextInput, TextArea, Label, Card, Badge, ErrorBanner, EmptyState, Spinner, Skeleton, FadeIn } from "@/components/ui";
 
@@ -176,10 +176,7 @@ function CreateKitForm({ onCreated }: { onCreated: () => void }) {
 
   return (
     <Card className="p-5">
-      <h2 className="mb-4 flex items-center gap-2 font-semibold">
-        <Sparkle size={18} weight="fill" className="text-[var(--color-accent)]" />
-        Create a kit
-      </h2>
+      <h2 className="mb-4 font-semibold">Create a kit</h2>
       <form onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>
         {error && <ErrorBanner message={error} />}
         <div>
@@ -233,10 +230,7 @@ function BatchImportForm({ onImported }: { onImported: () => void }) {
 
   return (
     <Card className="p-5">
-      <h2 className="mb-1 flex items-center gap-2 font-semibold">
-        <FileArrowUp size={18} weight="fill" className="text-[var(--color-accent)]" />
-        Prepare for multiple roles
-      </h2>
+      <h2 className="mb-1 font-semibold">Prepare for multiple roles</h2>
       <p className="mb-4 text-sm text-[var(--color-text-muted)]">
         Upload a JSON file: an array of <code className="rounded bg-[var(--color-border)] px-1 py-0.5 text-xs">{"{ jd, company_url, days }"}</code> objects.
       </p>

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Sparkle, SignOut } from "@phosphor-icons/react";
+import { SignOut } from "@phosphor-icons/react";
 import { api } from "@/lib/apiClient";
 import { Button, Spinner } from "@/components/ui";
 
@@ -24,10 +24,7 @@ export function AppNav({ email }: { email: string }) {
   return (
     <header className="sticky top-0 z-10 border-b border-[var(--color-border)] bg-[var(--color-surface)]/85 backdrop-blur">
       <nav className="mx-auto flex h-16 max-w-5xl items-center justify-between px-4 sm:px-6" aria-label="Primary">
-        <Link href="/dashboard" className="flex items-center gap-2 font-semibold tracking-tight text-[var(--color-text)]">
-          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--color-accent-soft)] text-[var(--color-accent)]">
-            <Sparkle size={16} weight="fill" />
-          </span>
+        <Link href="/dashboard" className="font-semibold tracking-tight text-[var(--color-text)]">
           Interview Prep Kit
         </Link>
         <div className="flex items-center gap-3">

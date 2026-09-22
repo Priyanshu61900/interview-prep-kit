@@ -94,7 +94,7 @@ export function ErrorBanner({ message }: { message: string }) {
   return (
     <div
       role="alert"
-      className="animate-fade-slide-up flex items-start gap-2 rounded-[var(--radius-md)] border-l-2 border-[var(--color-danger)] bg-[var(--color-danger-soft)] px-4 py-3 text-[var(--color-danger)]"
+      className="animate-fade-slide-up flex items-start gap-2 rounded-[var(--radius-md)] border border-[var(--color-danger)]/40 bg-[var(--color-danger-soft)] px-4 py-3 text-[var(--color-danger)]"
     >
       <WarningCircle size={20} weight="fill" className="mt-0.5 shrink-0" />
       <span>{message}</span>

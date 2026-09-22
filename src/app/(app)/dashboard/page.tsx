@@ -59,40 +59,51 @@ export default function DashboardPage() {
           </div>
         </FadeIn>
 
-        <div className="mt-8 grid gap-8 grid-cols-1 lg:grid-cols-[1fr_360px]">
-          <div className="space-y-8">
+        <div className="mt-8 space-y-12 max-w-3xl">
+          {/* Kits List Section */}
+          <section>
+            <h2 className="mb-6 text-lg font-semibold text-[var(--color-text)]">Your Kits</h2>
             {listError && <ErrorBanner message={listError} />}
             {kits === null && !listError && (
               <div className="space-y-4">
-                <Skeleton className="h-24 w-full rounded-xl" />
-                <Skeleton className="h-24 w-full rounded-xl" />
-                <Skeleton className="h-24 w-full rounded-xl" />
+                <Skeleton className="h-20 w-full rounded-lg" />
+                <Skeleton className="h-20 w-full rounded-lg" />
+                <Skeleton className="h-20 w-full rounded-lg" />
               </div>
             )}
             {kits?.length === 0 && (
               <div className="rounded-lg border border-dashed border-[var(--color-border)] bg-[var(--color-surface-raised)]/50 p-12 text-center">
                 <FolderOpen size={32} className="mx-auto mb-3 text-[var(--color-text-faint)]" weight="light" />
                 <p className="font-semibold text-[var(--color-text)]">No kits yet</p>
-                <p className="mt-1 text-sm text-[var(--color-text-muted)]">Create your first kit using the form on the right</p>
+                <p className="mt-1 text-sm text-[var(--color-text-muted)]">Create one below to get started</p>
               </div>
             )}
-            <ul className="space-y-4">
-              <AnimatePresence initial={false}>
-                {kits?.map((kit, i) => (
-                  <KitRow key={kit.id} kit={kit} index={i} onDeleted={load} />
-                ))}
-              </AnimatePresence>
-            </ul>
-          </div>
+            {kits && kits.length > 0 && (
+              <ul className="space-y-3">
+                <AnimatePresence initial={false}>
+                  {kits.map((kit, i) => (
+                    <KitRow key={kit.id} kit={kit} index={i} onDeleted={load} />
+                  ))}
+                </AnimatePresence>
+              </ul>
+            )}
+          </section>
 
-          <div className="space-y-6">
+          {/* Create Kit Section */}
+          <section>
+            <h2 className="mb-6 text-lg font-semibold text-[var(--color-text)]">Create New Kit</h2>
             <FadeIn delay={0.05}>
               <CreateKitForm onCreated={load} />
             </FadeIn>
+          </section>
+
+          {/* Batch Import Section */}
+          <section>
+            <h2 className="mb-6 text-lg font-semibold text-[var(--color-text)]">Batch Import</h2>
             <FadeIn delay={0.1}>
               <BatchImportForm onImported={load} />
             </FadeIn>
-          </div>
+          </section>
         </div>
       </div>
     </main>

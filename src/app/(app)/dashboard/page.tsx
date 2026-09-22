@@ -59,39 +59,40 @@ export default function DashboardPage() {
           </div>
         </FadeIn>
 
-        <div className="mt-12 grid gap-12 lg:grid-cols-[minmax(0,1fr)_420px]">
+        <div className="mt-12 grid gap-12 lg:grid-cols-[1fr_420px]">
           <div className="space-y-8">
-          {listError && <ErrorBanner message={listError} />}
-          {kits === null && !listError && (
-            <div className="space-y-4">
-              <Skeleton className="h-24 w-full rounded-xl" />
-              <Skeleton className="h-24 w-full rounded-xl" />
-              <Skeleton className="h-24 w-full rounded-xl" />
-            </div>
-          )}
-          {kits?.length === 0 && (
-            <div className="rounded-2xl border border-[var(--color-border)] bg-gradient-to-br from-[var(--color-surface)] to-[var(--color-surface-raised)] p-12 text-center">
-              <FolderOpen size={48} className="mx-auto mb-4 text-[var(--color-text-faint)]" />
-              <p className="text-xl font-semibold text-[var(--color-text)]">No kits yet</p>
-              <p className="mt-2 text-[var(--color-text-muted)]">Create your first interview prep kit using the form on the right</p>
-            </div>
-          )}
-          <ul className="space-y-4">
-            <AnimatePresence initial={false}>
-              {kits?.map((kit, i) => (
-                <KitRow key={kit.id} kit={kit} index={i} onDeleted={load} />
-              ))}
-            </AnimatePresence>
-          </ul>
-        </div>
+            {listError && <ErrorBanner message={listError} />}
+            {kits === null && !listError && (
+              <div className="space-y-4">
+                <Skeleton className="h-24 w-full rounded-xl" />
+                <Skeleton className="h-24 w-full rounded-xl" />
+                <Skeleton className="h-24 w-full rounded-xl" />
+              </div>
+            )}
+            {kits?.length === 0 && (
+              <div className="rounded-2xl border border-[var(--color-border)] bg-gradient-to-br from-[var(--color-surface)] to-[var(--color-surface-raised)] p-12 text-center">
+                <FolderOpen size={48} className="mx-auto mb-4 text-[var(--color-text-faint)]" />
+                <p className="text-xl font-semibold text-[var(--color-text)]">No kits yet</p>
+                <p className="mt-2 text-[var(--color-text-muted)]">Create your first interview prep kit using the form on the right</p>
+              </div>
+            )}
+            <ul className="space-y-4">
+              <AnimatePresence initial={false}>
+                {kits?.map((kit, i) => (
+                  <KitRow key={kit.id} kit={kit} index={i} onDeleted={load} />
+                ))}
+              </AnimatePresence>
+            </ul>
+          </div>
 
-        <div className="space-y-6">
-          <FadeIn delay={0.05}>
-            <CreateKitForm onCreated={load} />
-          </FadeIn>
-          <FadeIn delay={0.1}>
-            <BatchImportForm onImported={load} />
-          </FadeIn>
+          <div className="space-y-6">
+            <FadeIn delay={0.05}>
+              <CreateKitForm onCreated={load} />
+            </FadeIn>
+            <FadeIn delay={0.1}>
+              <BatchImportForm onImported={load} />
+            </FadeIn>
+          </div>
         </div>
       </div>
     </main>

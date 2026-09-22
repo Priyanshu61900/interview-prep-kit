@@ -40,9 +40,32 @@ Open http://localhost:3000.
 | `GROQ_MODEL` | Defaults to `openai/gpt-oss-120b` |
 | `NODE_ENV` | `production` enables SSRF hardening (rejects private/loopback company URLs); left unset locally so the batch command can target `http://localhost` fixtures |
 
-### Deployed
+### Deployment (Vercel)
 
-Deployed on Vercel (frontend and backend are the same deployment — see above). The same environment variables are set in the Vercel project's settings rather than committed. Live URL and repo link are in the submission.
+1. **Push to GitHub** (required by Vercel):
+   ```bash
+   git remote add origin https://github.com/YOUR_USERNAME/interview-prep-kit.git
+   git branch -M main
+   git push -u origin main
+   ```
+
+2. **Deploy to Vercel**:
+   - Visit [vercel.com](https://vercel.com) and sign in
+   - Click "Add New Project" → "Import Git Repository"
+   - Select `interview-prep-kit` from your GitHub repos
+   - Set environment variables in Vercel dashboard:
+     - `MONGODB_URI`: MongoDB Atlas connection string
+     - `AUTH_SECRET`: Generate with `openssl rand -hex 32`
+     - `GROQ_API_KEY`: From [console.groq.com](https://console.groq.com/keys)
+   - Click "Deploy"
+
+3. **Or deploy from CLI**:
+   ```bash
+   npm run build           # Verify build succeeds locally
+   vercel --prod          # Deploy to production
+   ```
+
+The same environment variables are set in the Vercel project's settings rather than committed. Live URL is provided after deployment.
 
 ### Batch entry point (Section 9)
 

@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Plus, PushPin, Trash } from "@phosphor-icons/react";
 import type { Kit, Flashcard, EditOrigin } from "@/types/kit";
 import { Button, TextArea, Card, Badge, FadeIn } from "@/components/ui";
@@ -24,8 +23,6 @@ export function FlashcardsSection({
   onChange: (mutator: (kit: Kit) => Kit) => void;
   onPin: (itemId: string, pinned: boolean) => void;
 }) {
-  const [showAdd, setShowAdd] = useState(false);
-
   function update(id: string, patch: Partial<Flashcard>) {
     onChange((k) => ({ ...k, flashcards: k.flashcards.map((f) => (f.id === id ? { ...f, ...patch } : f)) }));
   }
@@ -34,7 +31,6 @@ export function FlashcardsSection({
   }
   function add() {
     onChange((k) => ({ ...k, flashcards: [...k.flashcards, { id: nextId(k.flashcards), front: "New card - edit me", back: "", requirement_ids: [] }] }));
-    setShowAdd(false);
   }
 
   return (

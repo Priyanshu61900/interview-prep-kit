@@ -24,7 +24,7 @@ export function AppNav({ email }: { email: string }) {
   return (
     <header className="sticky top-0 z-10 overflow-x-hidden border-b border-[var(--color-border)] bg-[var(--color-surface)]/85 backdrop-blur">
       <nav className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8" aria-label="Primary">
-        <Link href="/dashboard" className="font-semibold tracking-tight text-[var(--color-text)]">
+        <Link href="/dashboard" className="text-base font-bold tracking-[-0.01em] text-[var(--color-text)]">
           Interview Prep Kit
         </Link>
         <div className="flex items-center gap-3">

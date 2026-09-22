@@ -46,7 +46,7 @@ export default function KitPage() {
     return (
       <main className="mx-auto flex max-w-lg flex-col items-center gap-5 px-4 py-24 text-center">
         <motion.span
-          className="flex h-14 w-14 items-center justify-center rounded-full bg-[var(--color-accent-soft)] text-[var(--color-accent)]"
+          className="flex h-14 w-14 items-center justify-center bg-[var(--color-accent-soft)] text-[var(--color-accent)]"
           animate={{ scale: [1, 1.08, 1] }}
           transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
         >

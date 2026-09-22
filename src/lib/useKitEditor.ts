@@ -28,6 +28,10 @@ export type SaveState = "idle" | "saving" | "saved" | "error";
  * keystroke), and the regenerate/pin actions. This is the single source of
  * truth the whole kit page renders from.
  */
+function loadErrorMessage(err: unknown): string {
+  return err instanceof ApiClientError ? err.message : "Could not load this kit.";
+}
+
 export function useKitEditor(id: string) {
   const [doc, setDoc] = useState<KitDocDto | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -42,13 +46,29 @@ export function useKitEditor(id: string) {
       setDoc(res.kit);
       setLoadError(null);
     } catch (err) {
-      setLoadError(err instanceof ApiClientError ? err.message : "Could not load this kit.");
+      setLoadError(loadErrorMessage(err));
     }
   }, [id]);
 
+  // Fetched from a promise callback rather than the effect body, and discarded
+  // if the kit id changes or the page unmounts mid-request.
   useEffect(() => {
-    load();
-  }, [load]);
+    let cancelled = false;
+    api
+      .get<{ kit: KitDocDto }>(`/api/kits/${id}`)
+      .then((res) => {
+        if (cancelled) return;
+        setDoc(res.kit);
+        setLoadError(null);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        setLoadError(loadErrorMessage(err));
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [id]);
 
   useEffect(() => {
     if (doc?.status === "generating") {

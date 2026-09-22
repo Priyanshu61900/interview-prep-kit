@@ -196,7 +196,7 @@ function AddQuestionForm({ requirements, onAdd, onCancel }: { requirements: Requ
         id="new-question-requirement"
         value={requirementId}
         onChange={(e) => setRequirementId(e.target.value)}
-        className="rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-2 py-1.5 text-sm"
+        className="min-h-[44px] rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-3 py-2 text-sm"
       >
         <option value="">None</option>
         {requirements.map((r) => (
@@ -289,7 +289,7 @@ function QuestionCard({
           id={`category-${question.id}`}
           value={question.category}
           onChange={(e) => onMoveCategory(e.target.value as QuestionCategory)}
-          className="rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-2 py-1.5 text-sm"
+          className="min-h-[44px] rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-3 py-2 text-sm"
         >
           {CATEGORIES.map((c) => (
             <option key={c} value={c}>

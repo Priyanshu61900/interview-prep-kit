@@ -4,7 +4,7 @@ import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { AuthShell } from "@/components/AuthLayout";
-import { Button, TextInput, Label, ErrorBanner } from "@/components/ui";
+import { Button, TextInput, Label, ErrorBanner, Spinner } from "@/components/ui";
 import { api, ApiClientError } from "@/lib/apiClient";
 
 export default function LoginPage() {
@@ -30,8 +30,8 @@ export default function LoginPage() {
   }
 
   return (
-    <AuthShell title="Welcome back" subtitle="Log in to your interview prep kits.">
-      <form onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>
+    <AuthShell title="Welcome back" subtitle="Your kits are where you left them.">
+      <form onSubmit={onSubmit} className="flex flex-col gap-6" noValidate>
         {error && <ErrorBanner message={error} />}
         <div>
           <Label htmlFor="email">Email</Label>
@@ -42,13 +42,14 @@ export default function LoginPage() {
           <TextInput id="password" type="password" autoComplete="current-password" required value={password} onChange={(e) => setPassword(e.target.value)} />
         </div>
         <Button type="submit" disabled={loading} className="mt-2 w-full">
+          {loading && <Spinner className="h-4 w-4" />}
           {loading ? "Logging in…" : "Log in"}
         </Button>
       </form>
-      <p className="mt-6 text-center text-sm text-[var(--color-text-muted)]">
-        Need an account?{" "}
-        <Link href="/register" className="font-medium text-[var(--color-accent)] hover:underline">
-          Sign up
+      <p className="mt-10 text-[var(--color-text-muted)]">
+        First time here?{" "}
+        <Link href="/register" className="font-semibold text-[var(--color-accent)] underline underline-offset-4">
+          Create an account
         </Link>
       </p>
     </AuthShell>

@@ -13,7 +13,7 @@ export function handleApiError(err: unknown) {
   if (err instanceof PipelineError) return errorJson(err.code, err.message, 422);
   if (err instanceof LlmError) return errorJson(err.code, err.message, 502);
   if (err instanceof Error && err.name === "ZodError") return errorJson("INVALID_INPUT", err.message, 400);
-  // eslint-disable-next-line no-console
+   
   console.error(err);
   return errorJson("INTERNAL_ERROR", "Something went wrong. Please try again.", 500);
 }

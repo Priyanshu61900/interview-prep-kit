@@ -1,62 +1,44 @@
-"use client";
-
 import type { ReactNode } from "react";
-import { useState, useEffect } from "react";
-import { Target, MapTrifold, Cards } from "@phosphor-icons/react";
 
-const PILLARS = [
-  { icon: Target, label: "Requirements extracted and prioritised from the posting itself" },
-  { icon: MapTrifold, label: "Company research crawled and cited, not invented" },
-  { icon: Cards, label: "Questions, flashcards and a day-by-day schedule, all editable" },
+const CAPABILITIES = [
+  ["Ranked requirements", "The skills a posting actually tests, ordered by how much they count."],
+  ["Company research", "Drawn from what the company has published, not invented."],
+  ["A dated plan", "Flashcards and mock questions, sized to the days you have left."],
 ];
 
 export function AuthShell({ title, subtitle, children }: { title: string; subtitle: string; children: ReactNode }) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) return null;
-
   return (
-    <div className="min-h-[100dvh] bg-[var(--color-bg)] text-[var(--color-text)] flex flex-col">
-      {/* Hero section with branding */}
-      <div className="flex-1 flex flex-col justify-center px-6 py-20 sm:px-8 md:py-24 border-b border-[var(--color-border)]" style={{ animation: 'slide-in-right 600ms cubic-bezier(0.23, 1, 0.32, 1) forwards' }}>
-        <div className="mx-auto w-full max-w-2xl">
-          <div className="space-y-8">
-            <div className="space-y-4" style={{ animation: 'slide-up 500ms cubic-bezier(0.23, 1, 0.32, 1) 100ms forwards' }}>
-              <h1 className="text-5xl font-bold text-[var(--color-text)]">Interview Prep Kit</h1>
-              <p className="text-lg text-[var(--color-text-muted)] max-w-lg">Build personalized study plans from job descriptions and company research. Everything you need to ace the interview.</p>
-            </div>
+    // Asymmetric on desktop: the argument gets more room than the form. Both
+    // columns stay transparent so the drifting word field reads as one surface.
+    <div className="grid min-h-[100dvh] grid-cols-1 lg:grid-cols-[1.15fr_1fr]">
+      <section className="flex flex-col justify-between gap-16 px-6 py-16 sm:px-10 lg:px-16 lg:py-24">
+        <p className="type-label text-[var(--color-text-faint)]">Interview Prep Kit</p>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-8">
-              {PILLARS.map(({ icon: Icon, label }, i) => (
-                <div
-                  key={label}
-                  className="flex gap-3"
-                  style={{ animation: `slide-up 500ms cubic-bezier(0.23, 1, 0.32, 1) ${200 + i * 80}ms forwards` }}
-                >
-                  <Icon size={20} weight="bold" className="mt-0 shrink-0 text-[var(--color-accent)]" aria-hidden="true" />
-                  <p className="text-sm leading-relaxed text-[var(--color-text-muted)]">{label}</p>
-                </div>
-              ))}
-            </div>
-          </div>
+        <div className="max-w-xl">
+          <h1 className="type-hero text-balance">Walk in knowing what they&rsquo;ll ask.</h1>
+          <p className="mt-6 max-w-md text-lg leading-relaxed text-[var(--color-text-muted)]">
+            Paste a job posting. Get the skills it tests, what the company is building, and a day-by-day plan to close the gap.
+          </p>
         </div>
-      </div>
 
-      {/* Form section */}
-      <div className="flex-1 flex flex-col justify-center px-6 py-20 sm:px-8 md:py-24" style={{ animation: 'slide-up 500ms cubic-bezier(0.23, 1, 0.32, 1) 200ms forwards' }}>
-        <div className="mx-auto w-full max-w-md">
-          <div className="mb-8 space-y-2">
-            <h2 className="text-3xl font-bold text-[var(--color-text)]">{title}</h2>
-            <p className="text-sm text-[var(--color-text-muted)]">{subtitle}</p>
-          </div>
+        <ul className="max-w-md">
+          {CAPABILITIES.map(([name, detail]) => (
+            <li key={name} className="border-t border-[var(--color-border)] py-6 last:pb-0">
+              <h2 className="type-label">{name}</h2>
+              <p className="mt-2 text-[var(--color-text-muted)]">{detail}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
 
-          {children}
+      <section className="flex flex-col justify-center px-6 py-16 sm:px-10 lg:px-16">
+        {/* The form is a lit panel so it separates from the moving background. */}
+        <div className="mx-auto w-full max-w-[26rem] rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-8 lg:mx-0">
+          <h2 className="type-heading">{title}</h2>
+          <p className="mt-3 text-[var(--color-text-muted)]">{subtitle}</p>
+          <div className="mt-8">{children}</div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

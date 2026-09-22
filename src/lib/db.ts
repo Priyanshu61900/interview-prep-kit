@@ -8,7 +8,7 @@ interface MongooseCache {
 }
 
 declare global {
-  // eslint-disable-next-line no-var
+   
   var _mongooseCache: MongooseCache | undefined;
 }
 
@@ -34,7 +34,7 @@ async function resolveUri(): Promise<string> {
   }
 
   const { MongoMemoryServer } = await import("mongodb-memory-server");
-  // eslint-disable-next-line no-console
+   
   console.warn("[db] MONGODB_URI not configured — using an in-memory MongoDB for local dev. Data will not persist.");
   const mem = await MongoMemoryServer.create();
   return mem.getUri();

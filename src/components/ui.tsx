@@ -14,22 +14,21 @@ export function Button({
 }: Omit<HTMLMotionProps<"button">, "ref"> & { variant?: "primary" | "secondary" | "ghost" | "danger"; size?: "sm" | "md" }) {
   const reduce = useReducedMotion();
   const base =
-    "inline-flex items-center justify-center gap-2 font-medium transition-[transform,box-shadow] duration-160 ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.96] disabled:opacity-50 disabled:cursor-not-allowed relative";
+    "inline-flex items-center justify-center gap-2 font-medium transition-[color,background-color,border-color,box-shadow] duration-150 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed";
   const isPrimary = variant === "primary";
-  const shape = isPrimary ? "rounded-full" : "rounded-xl";
-  const sizes = size === "sm" ? "px-3.5 py-1.5 text-sm" : isPrimary ? "px-6 py-3 text-sm" : "px-4 py-2.5 text-sm";
+  const shape = "rounded-lg";
+  const sizes = size === "sm" ? "px-3 py-1.5 text-xs font-semibold" : isPrimary ? "px-5 py-2.5 text-sm font-semibold" : "px-4 py-2 text-sm font-medium";
   const variants: Record<string, string> = {
-    primary: "bg-[var(--color-accent)] text-[var(--color-accent-foreground)] hover:bg-[var(--color-accent-hover)] shadow-lg hover:shadow-xl",
-    secondary: "border border-[var(--color-border)] text-[var(--color-text)] hover:border-[var(--color-border-strong)] hover:bg-[var(--color-surface-raised)]",
-    ghost: "text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface)]/50",
-    danger: "bg-[var(--color-danger)] text-white hover:brightness-110 shadow-lg",
+    primary: "bg-[var(--color-accent)] text-[var(--color-accent-foreground)] hover:bg-[var(--color-accent-hover)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/30 focus:ring-offset-2 focus:ring-offset-[var(--color-bg)]",
+    secondary: "border border-[var(--color-border)] text-[var(--color-text)] hover:border-[var(--color-border-strong)] hover:bg-[var(--color-surface-raised)] focus:outline-none focus:ring-2 focus:ring-[var(--color-border-strong)]/30",
+    ghost: "text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface)]/50 focus:outline-none focus:ring-2 focus:ring-[var(--color-text-muted)]/20",
+    danger: "bg-[var(--color-danger)] text-white hover:bg-[#dc2626] focus:outline-none focus:ring-2 focus:ring-[var(--color-danger)]/30 focus:ring-offset-2 focus:ring-offset-[var(--color-bg)]",
   };
   return (
     <motion.button
       className={`${base} ${shape} ${sizes} ${variants[variant]} ${className}`}
-      whileTap={reduce || props.disabled ? undefined : { scale: 0.96 }}
-      whileHover={reduce || props.disabled ? undefined : { y: -1 }}
-      transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+      whileTap={reduce || props.disabled ? undefined : { scale: 0.98 }}
+      transition={{ duration: 0.15 }}
       {...props}
     >
       {children}
@@ -38,7 +37,7 @@ export function Button({
 }
 
 const fieldBase =
-  "w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-raised)] px-4 py-3 text-sm text-[var(--color-text)] transition-[border-color,box-shadow,background-color] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] placeholder:text-[var(--color-text-faint)] focus:border-[var(--color-accent)] focus:bg-[var(--color-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/20";
+  "w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2.5 text-sm text-[var(--color-text)] transition-[border-color,box-shadow] duration-150 placeholder:text-[var(--color-text-faint)] focus:outline-none focus:border-[var(--color-accent)] focus:ring-2 focus:ring-[var(--color-accent)]/20";
 
 export function TextInput({ className = "", ...props }: InputHTMLAttributes<HTMLInputElement>) {
   return <input className={`${fieldBase} ${className}`} {...props} />;
@@ -50,14 +49,12 @@ export function TextArea({ className = "", ...props }: TextareaHTMLAttributes<HT
 
 export function Card({ className = "", hover = false, children }: { className?: string; hover?: boolean; children: ReactNode }) {
   return (
-    <div className={`rounded-2xl overflow-hidden ${className}`}>
-      <div className="rounded-2xl border border-[var(--color-border)] bg-gradient-to-br from-[var(--color-surface)] to-[var(--color-surface-raised)] p-1 shadow-lg">
-        <div className={`rounded-[1.5rem] bg-[var(--color-surface)] p-6 ${
-          hover ? "transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:shadow-xl" : ""
-        }`}>
-          {children}
-        </div>
-      </div>
+    <div
+      className={`rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] transition-all duration-200 ${
+        hover ? "hover:border-[var(--color-border-strong)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.15)]" : ""
+      } ${className}`}
+    >
+      <div className="p-6">{children}</div>
     </div>
   );
 }

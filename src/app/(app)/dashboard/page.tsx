@@ -50,16 +50,16 @@ export default function DashboardPage() {
   }, [kits, load]);
 
   return (
-    <main className="min-h-[100dvh] flex flex-col overflow-x-hidden bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-surface)] to-[var(--color-bg)]">
-      <div className="mx-auto w-full max-w-7xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
+    <main className="min-h-[100dvh] flex flex-col overflow-x-hidden bg-[var(--color-bg)]">
+      <div className="mx-auto w-full max-w-6xl flex-1 px-4 py-12 sm:px-6 lg:px-8">
         <FadeIn>
-          <div className="mb-20">
-            <h1 className="text-5xl font-bold tracking-tight text-[var(--color-text)]">Interview Prep Kits</h1>
-            <p className="mt-3 text-lg text-[var(--color-text-muted)]">Transform job descriptions into personalized study plans</p>
+          <div className="mb-12">
+            <h1 className="text-4xl font-bold tracking-tight text-[var(--color-text)]">Interview Prep Kits</h1>
+            <p className="mt-2 text-base text-[var(--color-text-muted)]">Build personalized study plans from job descriptions</p>
           </div>
         </FadeIn>
 
-        <div className="mt-12 grid gap-12 grid-cols-1 lg:grid-cols-[1fr_380px]">
+        <div className="mt-8 grid gap-8 grid-cols-1 lg:grid-cols-[1fr_360px]">
           <div className="space-y-8">
             {listError && <ErrorBanner message={listError} />}
             {kits === null && !listError && (
@@ -70,10 +70,10 @@ export default function DashboardPage() {
               </div>
             )}
             {kits?.length === 0 && (
-              <div className="rounded-2xl border border-[var(--color-border)] bg-gradient-to-br from-[var(--color-surface)] to-[var(--color-surface-raised)] p-12 text-center">
-                <FolderOpen size={48} className="mx-auto mb-4 text-[var(--color-text-faint)]" />
-                <p className="text-xl font-semibold text-[var(--color-text)]">No kits yet</p>
-                <p className="mt-2 text-[var(--color-text-muted)]">Create your first interview prep kit using the form on the right</p>
+              <div className="rounded-lg border border-dashed border-[var(--color-border)] bg-[var(--color-surface-raised)]/50 p-12 text-center">
+                <FolderOpen size={32} className="mx-auto mb-3 text-[var(--color-text-faint)]" weight="light" />
+                <p className="font-semibold text-[var(--color-text)]">No kits yet</p>
+                <p className="mt-1 text-sm text-[var(--color-text-muted)]">Create your first kit using the form on the right</p>
               </div>
             )}
             <ul className="space-y-4">

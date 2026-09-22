@@ -20,14 +20,12 @@ export function AuthShell({ title, subtitle, children }: { title: string; subtit
   if (!mounted) return null;
 
   return (
-    <div className="min-h-[100dvh] bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-surface)] to-[var(--color-bg)] text-[var(--color-text)] flex flex-col lg:flex-row">
-      {/* Left: Dark brand showcase with grid backdrop */}
+    <div className="min-h-[100dvh] bg-[var(--color-bg)] text-[var(--color-text)] flex flex-col lg:flex-row">
+      {/* Left: Brand information section */}
       <div
-        className="hidden lg:flex lg:w-1/2 flex-col justify-center px-16 py-16 relative overflow-hidden"
+        className="hidden lg:flex lg:w-1/2 flex-col justify-center px-16 py-16 border-r border-[var(--color-border)]"
         style={{ animation: 'slide-in-left 600ms cubic-bezier(0.23, 1, 0.32, 1) forwards' }}
       >
-        {/* Subtle animated gradient backdrop */}
-        <div className="absolute inset-0 opacity-[0.02]" style={{backgroundImage: 'radial-gradient(circle at 20% 50%, var(--color-accent) 0%, transparent 50%), radial-gradient(circle at 80% 80%, var(--color-accent) 0%, transparent 50%)'}}></div>
 
         {/* Content */}
         <div className="relative space-y-16 max-w-md">
@@ -58,15 +56,15 @@ export function AuthShell({ title, subtitle, children }: { title: string; subtit
         </div>
       </div>
 
-      {/* Right: Clean, aligned login form */}
+      {/* Right: Form section */}
       <div
-        className="w-full lg:w-1/2 flex flex-col justify-center px-6 py-16 sm:px-8 lg:px-12 lg:border-l lg:border-[var(--color-border)]"
+        className="w-full lg:w-1/2 flex flex-col justify-center px-6 py-16 sm:px-8 lg:px-12"
         style={{ animation: 'slide-in-right 600ms cubic-bezier(0.23, 1, 0.32, 1) forwards' }}
       >
         <div className="w-full max-w-sm" style={{ animation: 'slide-up 500ms cubic-bezier(0.23, 1, 0.32, 1) 200ms forwards' }}>
-          <div className="mb-12 space-y-3">
-            <h2 className="text-xl font-semibold tracking-tight text-[var(--color-text)]">{title}</h2>
-            <p className="text-xs text-[var(--color-text-muted)]">{subtitle}</p>
+          <div className="mb-10 space-y-2">
+            <h2 className="text-2xl font-bold text-[var(--color-text)]">{title}</h2>
+            <p className="text-sm text-[var(--color-text-muted)]">{subtitle}</p>
           </div>
 
           {children}

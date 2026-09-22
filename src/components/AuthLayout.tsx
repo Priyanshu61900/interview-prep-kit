@@ -30,6 +30,22 @@ export function AuthShell({ title, subtitle, children }: { title: string; subtit
           </div>
 
           {children}
+
+          <div className="mt-12 space-y-4 border-t border-[var(--color-border)] pt-8" style={{ animation: 'slide-up 500ms cubic-bezier(0.23, 1, 0.32, 1) 400ms forwards' }}>
+            <p className="text-xs font-semibold uppercase tracking-widest text-[var(--color-text-faint)]">Why use this</p>
+            <div className="space-y-3">
+              {PILLARS.map(({ icon: Icon, label }, i) => (
+                <div
+                  key={label}
+                  className="flex gap-3"
+                  style={{ animation: `slide-up 500ms cubic-bezier(0.23, 1, 0.32, 1) ${450 + i * 50}ms forwards` }}
+                >
+                  <Icon size={16} weight="bold" className="mt-0.5 shrink-0 text-[var(--color-text)]" aria-hidden="true" />
+                  <p className="text-xs leading-relaxed text-[var(--color-text-muted)]">{label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>

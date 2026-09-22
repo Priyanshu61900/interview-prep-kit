@@ -13,19 +13,22 @@ export function Button({
 }: Omit<HTMLMotionProps<"button">, "ref"> & { variant?: "primary" | "secondary" | "ghost" | "danger"; size?: "sm" | "md" }) {
   const reduce = useReducedMotion();
   const base =
-    "inline-flex items-center justify-center gap-2 rounded-[var(--radius-md)] font-medium transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed";
-  const sizes = size === "sm" ? "px-3 py-1.5 text-sm" : "px-4 py-2.5 text-sm";
+    "inline-flex items-center justify-center gap-2 font-medium transition-[background-color,border-color,box-shadow] duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] disabled:opacity-50 disabled:cursor-not-allowed";
+  const isPrimary = variant === "primary";
+  const shape = isPrimary ? "rounded-full" : "rounded-[var(--radius-md)]";
+  const sizes = size === "sm" ? "px-3.5 py-1.5 text-sm" : isPrimary ? "px-5 py-2.5 text-sm" : "px-4 py-2.5 text-sm";
   const variants: Record<string, string> = {
-    primary: "bg-[var(--color-accent)] text-[var(--color-accent-foreground)] hover:bg-[var(--color-accent-hover)] shadow-sm shadow-[var(--color-accent)]/20",
+    primary: "bg-[var(--color-accent)] text-[var(--color-accent-foreground)] hover:bg-[var(--color-accent-hover)] shadow-[0_1px_0_rgba(255,255,255,0.25)_inset,0_8px_20px_-6px_var(--color-accent)]",
     secondary: "bg-[var(--color-surface)] text-[var(--color-text)] border border-[var(--color-border-strong)] hover:border-[var(--color-accent)]",
     ghost: "text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-border)]/60",
     danger: "bg-[var(--color-danger-soft)] text-[var(--color-danger)] hover:brightness-95",
   };
   return (
     <motion.button
-      className={`${base} ${sizes} ${variants[variant]} ${className}`}
+      className={`${base} ${shape} ${sizes} ${variants[variant]} ${className}`}
       whileTap={reduce || props.disabled ? undefined : { scale: 0.97 }}
-      transition={{ duration: 0.12 }}
+      whileHover={reduce || props.disabled || !isPrimary ? undefined : { y: -1 }}
+      transition={{ duration: 0.18, ease: [0.32, 0.72, 0, 1] }}
       {...props}
     >
       {children}
@@ -33,29 +36,22 @@ export function Button({
   );
 }
 
+const fieldBase =
+  "w-full rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-3.5 py-2.5 text-sm text-[var(--color-text)] transition-[border-color,box-shadow] duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] placeholder:text-[var(--color-text-faint)] focus:border-[var(--color-accent)] focus:shadow-[0_0_0_3px_var(--color-accent-soft)] focus:outline-none";
+
 export function TextInput({ className = "", ...props }: InputHTMLAttributes<HTMLInputElement>) {
-  return (
-    <input
-      className={`w-full rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] transition-colors duration-150 placeholder:text-[var(--color-text-faint)] focus:border-[var(--color-accent)] ${className}`}
-      {...props}
-    />
-  );
+  return <input className={`${fieldBase} ${className}`} {...props} />;
 }
 
 export function TextArea({ className = "", ...props }: TextareaHTMLAttributes<HTMLTextAreaElement>) {
-  return (
-    <textarea
-      className={`w-full rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] transition-colors duration-150 placeholder:text-[var(--color-text-faint)] focus:border-[var(--color-accent)] ${className}`}
-      {...props}
-    />
-  );
+  return <textarea className={`${fieldBase} ${className}`} {...props} />;
 }
 
 export function Card({ className = "", hover = false, children }: { className?: string; hover?: boolean; children: ReactNode }) {
   return (
     <div
-      className={`rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] shadow-sm transition-all duration-200 ${
-        hover ? "hover:-translate-y-0.5 hover:border-[var(--color-border-strong)] hover:shadow-md" : ""
+      className={`rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-card)] [box-shadow:var(--shadow-card),var(--inset-highlight)] transition-[transform,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] ${
+        hover ? "hover:-translate-y-1 hover:border-[var(--color-border-strong)] hover:[box-shadow:var(--shadow-card-hover),var(--inset-highlight)]" : ""
       } ${className}`}
     >
       {children}

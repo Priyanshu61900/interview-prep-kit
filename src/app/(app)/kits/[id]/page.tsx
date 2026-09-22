@@ -103,7 +103,7 @@ export default function KitPage() {
 
       <FadeIn>
         <div className="mb-1 flex flex-wrap items-center gap-2">
-          <h1 className="text-2xl font-semibold tracking-tight">{kit.role.title || "Untitled role"}</h1>
+          <h1 className="text-3xl font-semibold tracking-tight">{kit.role.title || "Untitled role"}</h1>
           {doc.status === "partial" && <Badge tone="warning">Coverage gaps</Badge>}
         </div>
         <p className="mb-6 text-[var(--color-text-muted)]">

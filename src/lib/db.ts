@@ -26,19 +26,33 @@ function isPlaceholderUri(uri: string): boolean {
  * persist across restarts, but it unblocks local development and the
  * batch/test paths without requiring an Atlas cluster to exist yet.
  */
-// Managed-database integrations name the variable they inject themselves, and
-// the name depends on the prefix chosen when the store is linked. Accept the
-// usual spellings so provisioning through a marketplace integration does not
-// require hand-copying the connection string.
-const URI_VARS = ["MONGODB_URI", "MONGODB_URL", "ATLAS_URL", "DATABASE_URL"] as const;
+const URI_VARS = ["MONGODB_URI", "MONGODB_URL", "DATABASE_URL"] as const;
 
-async function resolveUri(): Promise<string> {
+/**
+ * A managed-database integration injects its own variable, prefixed with a
+ * name chosen when the store is linked (ATLAS_MONGODB_URI, MYDB_MONGODB_URI,
+ * and so on), so the exact key cannot be known ahead of time. Match on shape:
+ * a key that mentions Mongo holding a real mongodb connection string.
+ */
+export function findMongoUri(env: Record<string, string | undefined>): string | undefined {
   for (const name of URI_VARS) {
-    const value = process.env[name];
+    const value = env[name];
     if (value && !isPlaceholderUri(value)) return value;
   }
+  for (const [key, value] of Object.entries(env)) {
+    if (!value || !/mongo/i.test(key)) continue;
+    if (!/^mongodb(\+srv)?:\/\//.test(value)) continue;
+    if (isPlaceholderUri(value)) continue;
+    return value;
+  }
+  return undefined;
+}
+
+async function resolveUri(): Promise<string> {
+  const found = findMongoUri(process.env);
+  if (found) return found;
   if (process.env.NODE_ENV === "production") {
-    throw new Error(`No usable MongoDB connection string in production. Set one of: ${URI_VARS.join(", ")}.`);
+    throw new Error("No usable MongoDB connection string in production. Set MONGODB_URI, or link a managed database that injects one.");
   }
 
   const { MongoMemoryServer } = await import("mongodb-memory-server");

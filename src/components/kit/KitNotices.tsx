@@ -30,7 +30,7 @@ export function ResearchNotices({ kit, meta, warnings }: { kit: Kit; meta: { ski
             <ul className="mt-1 list-disc pl-5 text-[var(--color-text-muted)]">
               {meta.skipped_sources.map((s, i) => (
                 <li key={i} className="break-all">
-                  {s.url} — {s.reason}
+                  {s.url} - {s.reason}
                 </li>
               ))}
             </ul>

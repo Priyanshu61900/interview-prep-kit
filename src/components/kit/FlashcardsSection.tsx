@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { Plus, PushPin, Trash } from "@phosphor-icons/react";
 import type { Kit, Flashcard, EditOrigin } from "@/types/kit";
-import { Button, TextArea, Card, Badge } from "@/components/ui";
+import { Button, TextArea, Card, Badge, FadeIn } from "@/components/ui";
 
 function nextId(items: { id: string }[]): string {
   const max = items.reduce((m, i) => {
@@ -32,7 +33,7 @@ export function FlashcardsSection({
     onChange((k) => ({ ...k, flashcards: k.flashcards.filter((f) => f.id !== id) }));
   }
   function add() {
-    onChange((k) => ({ ...k, flashcards: [...k.flashcards, { id: nextId(k.flashcards), front: "New card — edit me", back: "", requirement_ids: [] }] }));
+    onChange((k) => ({ ...k, flashcards: [...k.flashcards, { id: nextId(k.flashcards), front: "New card - edit me", back: "", requirement_ids: [] }] }));
     setShowAdd(false);
   }
 
@@ -43,40 +44,42 @@ export function FlashcardsSection({
           Flashcards <span className="font-normal text-[var(--color-text-faint)]">({kit.flashcards.length})</span>
         </h3>
         <Button variant="secondary" size="sm" onClick={add}>
-          + Add flashcard
+          <Plus size={14} /> Add flashcard
         </Button>
       </div>
 
       {kit.flashcards.length === 0 && <p className="text-sm text-[var(--color-text-faint)]">No flashcards yet.</p>}
 
       <div className="grid gap-3 sm:grid-cols-2">
-        {kit.flashcards.map((f) => {
+        {kit.flashcards.map((f, i) => {
           const meta = flashcardMeta[f.id];
           const pinned = meta?.origin === "pinned";
           const edited = meta?.origin === "edited";
           return (
-            <Card key={f.id} className="p-4">
-              <div className="mb-2 flex items-center gap-1.5">
-                {edited && <Badge tone="accent">Edited</Badge>}
-                {pinned && <Badge tone="warning">Pinned</Badge>}
-              </div>
-              <label className="text-xs text-[var(--color-text-muted)]" htmlFor={`front-${f.id}`}>
-                Front
-              </label>
-              <TextArea id={`front-${f.id}`} rows={2} value={f.front} onChange={(e) => update(f.id, { front: e.target.value })} />
-              <label className="mt-2 block text-xs text-[var(--color-text-muted)]" htmlFor={`back-${f.id}`}>
-                Back
-              </label>
-              <TextArea id={`back-${f.id}`} rows={2} value={f.back} onChange={(e) => update(f.id, { back: e.target.value })} />
-              <div className="mt-3 flex justify-end gap-2">
-                <Button variant={pinned ? "primary" : "ghost"} size="sm" onClick={() => onPin(f.id, !pinned)} aria-pressed={pinned}>
-                  {pinned ? "Pinned" : "Pin"}
-                </Button>
-                <Button variant="danger" size="sm" onClick={() => remove(f.id)}>
-                  Delete
-                </Button>
-              </div>
-            </Card>
+            <FadeIn key={f.id} delay={Math.min(i * 0.04, 0.3)}>
+              <Card className="p-4">
+                <div className="mb-2 flex items-center gap-1.5">
+                  {edited && <Badge tone="accent">Edited</Badge>}
+                  {pinned && <Badge tone="warning">Pinned</Badge>}
+                </div>
+                <label className="text-xs text-[var(--color-text-muted)]" htmlFor={`front-${f.id}`}>
+                  Front
+                </label>
+                <TextArea id={`front-${f.id}`} rows={2} value={f.front} onChange={(e) => update(f.id, { front: e.target.value })} />
+                <label className="mt-2 block text-xs text-[var(--color-text-muted)]" htmlFor={`back-${f.id}`}>
+                  Back
+                </label>
+                <TextArea id={`back-${f.id}`} rows={2} value={f.back} onChange={(e) => update(f.id, { back: e.target.value })} />
+                <div className="mt-3 flex justify-end gap-2">
+                  <Button variant={pinned ? "primary" : "ghost"} size="sm" onClick={() => onPin(f.id, !pinned)} aria-pressed={pinned}>
+                    <PushPin size={14} weight={pinned ? "fill" : "regular"} /> {pinned ? "Pinned" : "Pin"}
+                  </Button>
+                  <Button variant="danger" size="sm" onClick={() => remove(f.id)} aria-label="Delete flashcard">
+                    <Trash size={14} />
+                  </Button>
+                </div>
+              </Card>
+            </FadeIn>
           );
         })}
       </div>

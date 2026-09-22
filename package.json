@@ -11,10 +11,12 @@
     "evaluate": "tsx scripts/evaluate.ts"
   },
   "dependencies": {
+    "@phosphor-icons/react": "^2.1.10",
     "bcryptjs": "^3.0.3",
     "cheerio": "^1.2.0",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.10.1",
+    "motion": "^13.4.0",
     "nanoid": "^6.0.1",
     "next": "16.3.5",
     "p-limit": "^7.3.3",
@@ -32,6 +34,7 @@
     "dotenv": "^18.0.2",
     "eslint": "^9",
     "eslint-config-next": "16.3.5",
+    "mongodb-memory-server": "^11.3.0",
     "tailwindcss": "^4",
     "tsx": "^4.23.15",
     "typescript": "^5",

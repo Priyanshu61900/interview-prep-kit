@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { ArrowUp, ArrowDown, PushPin, Trash, Plus, ArrowsClockwise } from "@phosphor-icons/react";
 import type { Kit, Question, QuestionCategory, Requirement, EditOrigin } from "@/types/kit";
-import { Button, TextArea, TextInput, Badge, Card } from "@/components/ui";
+import { Button, TextArea, TextInput, Badge, Card, Spinner } from "@/components/ui";
 
 const CATEGORY_LABELS: Record<QuestionCategory, string> = {
   technical: "Technical",
@@ -51,7 +52,7 @@ export function QuestionBank({
         id,
         requirement_ids: requirementId ? [requirementId] : [],
         category,
-        prompt: "New question — edit me",
+        prompt: "New question - edit me",
         answer_outline: "",
         difficulty: 2,
       };
@@ -148,9 +149,10 @@ function CategorySection({
         </h3>
         <div className="flex gap-2">
           <Button variant="secondary" size="sm" onClick={() => setShowAdd((s) => !s)}>
-            + Add question
+            <Plus size={14} /> Add question
           </Button>
           <Button variant="secondary" size="sm" onClick={handleRegenerate} disabled={regenerating}>
+            {regenerating ? <Spinner className="h-3.5 w-3.5" /> : <ArrowsClockwise size={14} />}
             {regenerating ? "Regenerating…" : "Regenerate"}
           </Button>
         </div>
@@ -298,16 +300,16 @@ function QuestionCard({
 
         <div className="ml-auto flex items-center gap-1">
           <Button variant="ghost" size="sm" onClick={() => onMove(-1)} disabled={!canMoveUp} aria-label="Move question up">
-            ↑
+            <ArrowUp size={14} />
           </Button>
           <Button variant="ghost" size="sm" onClick={() => onMove(1)} disabled={!canMoveDown} aria-label="Move question down">
-            ↓
+            <ArrowDown size={14} />
           </Button>
           <Button variant={pinned ? "primary" : "ghost"} size="sm" onClick={() => onPin(!pinned)} aria-pressed={pinned}>
-            {pinned ? "Pinned" : "Pin"}
+            <PushPin size={14} weight={pinned ? "fill" : "regular"} /> {pinned ? "Pinned" : "Pin"}
           </Button>
-          <Button variant="danger" size="sm" onClick={onDelete}>
-            Delete
+          <Button variant="danger" size="sm" onClick={onDelete} aria-label="Delete question">
+            <Trash size={14} />
           </Button>
         </div>
       </div>

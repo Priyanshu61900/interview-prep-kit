@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { ArrowsClockwise, Buildings } from "@phosphor-icons/react";
 import type { Kit } from "@/types/kit";
-import { Button, TextArea, Card } from "@/components/ui";
+import { Button, TextArea, Card, Spinner } from "@/components/ui";
 
 export function CompanyBriefSection({
   kit,
@@ -37,8 +38,12 @@ export function CompanyBriefSection({
   return (
     <Card className="p-5">
       <div className="mb-3 flex items-center justify-between">
-        <h3 className="font-semibold">Company brief</h3>
+        <h3 className="flex items-center gap-2 font-semibold">
+          <Buildings size={18} weight="fill" className="text-[var(--color-accent)]" />
+          Company brief
+        </h3>
         <Button variant="secondary" size="sm" onClick={handleRegenerate} disabled={regenerating}>
+          {regenerating ? <Spinner className="h-3.5 w-3.5" /> : <ArrowsClockwise size={14} />}
           {regenerating ? "Regenerating…" : "Regenerate"}
         </Button>
       </div>

@@ -13,7 +13,7 @@ Built for the Trao "AI Interview Prep Kit" full-stack assessment.
 | Database | MongoDB (Atlas free tier) via Mongoose | matches the brief |
 | Language | TypeScript throughout | matches the brief |
 | Scraping | `cheerio` for HTML parsing, native `fetch` for retrieval | lightweight, no headless browser needed for static company sites |
-| LLM | Groq — `llama-3.3-70b-versatile` (OpenAI-compatible Chat Completions API) | genuine free tier, fast inference, JSON mode; well suited to a pipeline that makes many sequential calls under a tokens-per-minute budget |
+| LLM | Groq — `openai/gpt-oss-120b` (OpenAI-compatible Chat Completions API) | genuine free tier, fast inference, JSON mode; well suited to a pipeline that makes many sequential calls under a tokens-per-minute budget |
 | Tests | Vitest | fast, zero-config with the existing TS setup |
 
 **Why Route Handlers instead of a separate Express server:** the brief allows equivalent technologies if justified. Route Handlers run on the same Node.js runtime Express would, but deploy as one Vercel project instead of two — no CORS configuration, no separate hosting/env-var story for a second service, and the brief's own requirement ("frontend and backend must both be reachable") is satisfied trivially since they're the same deployment. Concerns are still kept separate in code (see Architecture) — this is a deployment-topology choice, not an architecture one.
@@ -37,7 +37,7 @@ Open http://localhost:3000.
 | `MONGODB_URI` | MongoDB connection string (Atlas free tier, or local `mongod`) |
 | `AUTH_SECRET` | Secret used to sign session JWTs — generate with `openssl rand -hex 32` |
 | `GROQ_API_KEY` | Free-tier API key from [console.groq.com](https://console.groq.com/keys) |
-| `GROQ_MODEL` | Defaults to `llama-3.3-70b-versatile` |
+| `GROQ_MODEL` | Defaults to `openai/gpt-oss-120b` |
 | `NODE_ENV` | `production` enables SSRF hardening (rejects private/loopback company URLs); left unset locally so the batch command can target `http://localhost` fixtures |
 
 ### Deployed

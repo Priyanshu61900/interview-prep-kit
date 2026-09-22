@@ -107,7 +107,7 @@ export default function PracticePage() {
 
       {done ? (
         <Card className="p-8 text-center">
-          <p className="mb-4 font-medium">Session complete — {queue.length} cards reviewed.</p>
+          <p className="mb-4 font-medium">Session complete - {queue.length} cards reviewed.</p>
           <Button
             onClick={() => {
               setIndex(0);

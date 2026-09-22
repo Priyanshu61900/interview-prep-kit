@@ -3,8 +3,10 @@
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
+import { motion } from "motion/react";
+import { ArrowLeft, CardsThree, Sparkle } from "@phosphor-icons/react";
 import { useKitEditor } from "@/lib/useKitEditor";
-import { ErrorBanner, Spinner, Button, Badge } from "@/components/ui";
+import { ErrorBanner, Spinner, Button, Badge, FadeIn } from "@/components/ui";
 import { SaveStatus } from "@/components/kit/SaveStatus";
 import { CompanyBriefSection } from "@/components/kit/CompanyBriefSection";
 import { RoleSection } from "@/components/kit/RoleSection";
@@ -42,12 +44,19 @@ export default function KitPage() {
 
   if (doc.status === "generating") {
     return (
-      <main className="mx-auto flex max-w-lg flex-col items-center gap-4 px-4 py-24 text-center">
-        <Spinner className="h-8 w-8 text-[var(--color-accent)]" />
+      <main className="mx-auto flex max-w-lg flex-col items-center gap-5 px-4 py-24 text-center">
+        <motion.span
+          className="flex h-14 w-14 items-center justify-center rounded-full bg-[var(--color-accent-soft)] text-[var(--color-accent)]"
+          animate={{ scale: [1, 1.08, 1] }}
+          transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <Sparkle size={26} weight="fill" />
+        </motion.span>
         <h1 className="text-xl font-semibold">Generating your kit…</h1>
         <p className="text-sm text-[var(--color-text-muted)]">
           Crawling the company site, extracting requirements, and writing questions in stages. This usually takes 20–60 seconds.
         </p>
+        <Spinner className="h-4 w-4 text-[var(--color-text-faint)]" />
       </main>
     );
   }
@@ -86,19 +95,21 @@ export default function KitPage() {
   return (
     <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
       <div className="mb-2 flex items-center justify-between gap-3">
-        <Link href="/dashboard" className="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text)]">
-          ← Dashboard
+        <Link href="/dashboard" className="flex items-center gap-1 text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text)]">
+          <ArrowLeft size={14} /> Dashboard
         </Link>
         <SaveStatus state={saveState} />
       </div>
 
-      <div className="mb-1 flex flex-wrap items-center gap-2">
-        <h1 className="text-2xl font-semibold tracking-tight">{kit.role.title || "Untitled role"}</h1>
-        {doc.status === "partial" && <Badge tone="warning">Coverage gaps</Badge>}
-      </div>
-      <p className="mb-6 text-[var(--color-text-muted)]">
-        {kit.source.company} {kit.source.location && `· ${kit.source.location}`}
-      </p>
+      <FadeIn>
+        <div className="mb-1 flex flex-wrap items-center gap-2">
+          <h1 className="text-2xl font-semibold tracking-tight">{kit.role.title || "Untitled role"}</h1>
+          {doc.status === "partial" && <Badge tone="warning">Coverage gaps</Badge>}
+        </div>
+        <p className="mb-6 text-[var(--color-text-muted)]">
+          {kit.source.company} {kit.source.location && `· ${kit.source.location}`}
+        </p>
+      </FadeIn>
 
       {regenError && (
         <div className="mb-4">
@@ -112,21 +123,33 @@ export default function KitPage() {
       </div>
 
       <div className="flex flex-col gap-8">
-        <CompanyBriefSection kit={kit} onChange={update} onRegenerate={handleRegenerateBrief} />
-        <RoleSection kit={kit} />
-        <QuestionBank
-          kit={kit}
-          meta={{ question_meta: doc.meta.question_meta }}
-          onChange={update}
-          onRegenerate={handleRegenerateCategory}
-          onPin={(id, pinned) => pin("question", id, pinned)}
-        />
-        <FlashcardsSection kit={kit} flashcardMeta={doc.meta.flashcard_meta} onChange={update} onPin={(id, pinned) => pin("flashcard", id, pinned)} />
-        <ScheduleSection kit={kit} onChange={update} onRegenerate={handleRegenerateSchedule} />
+        <FadeIn delay={0.05}>
+          <CompanyBriefSection kit={kit} onChange={update} onRegenerate={handleRegenerateBrief} />
+        </FadeIn>
+        <FadeIn delay={0.1}>
+          <RoleSection kit={kit} />
+        </FadeIn>
+        <FadeIn delay={0.15}>
+          <QuestionBank
+            kit={kit}
+            meta={{ question_meta: doc.meta.question_meta }}
+            onChange={update}
+            onRegenerate={handleRegenerateCategory}
+            onPin={(id, pinned) => pin("question", id, pinned)}
+          />
+        </FadeIn>
+        <FadeIn delay={0.2}>
+          <FlashcardsSection kit={kit} flashcardMeta={doc.meta.flashcard_meta} onChange={update} onPin={(id, pinned) => pin("flashcard", id, pinned)} />
+        </FadeIn>
+        <FadeIn delay={0.25}>
+          <ScheduleSection kit={kit} onChange={update} onRegenerate={handleRegenerateSchedule} />
+        </FadeIn>
       </div>
 
       <div className="mt-10 flex justify-center border-t border-[var(--color-border)] pt-6">
-        <Button onClick={() => router.push(`/kits/${params.id}/practice`)}>Start practice session →</Button>
+        <Button onClick={() => router.push(`/kits/${params.id}/practice`)}>
+          <CardsThree size={18} weight="fill" /> Start practice session
+        </Button>
       </div>
     </main>
   );

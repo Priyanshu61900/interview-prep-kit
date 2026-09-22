@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
     await connectToDatabase();
 
     const contentHash = computeContentHash(jd, company_url, days);
-    const duplicate = await KitModel.findOne({ ownerId: userId, contentHash }).sort({ createdAt: -1 }).lean();
+    const duplicate = await KitModel.findOne({ ownerId: userId, contentHash, status: { $ne: "failed" } }).sort({ createdAt: -1 }).lean();
     if (duplicate) {
       return NextResponse.json(
         {

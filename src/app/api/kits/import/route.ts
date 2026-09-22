@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
     const created: { id: string; company_url: string }[] = [];
     for (const entry of parsed.data) {
       const contentHash = computeContentHash(entry.jd, entry.company_url, entry.days);
-      const existing = await KitModel.findOne({ ownerId: userId, contentHash });
+      const existing = await KitModel.findOne({ ownerId: userId, contentHash, status: { $ne: "failed" } });
       if (existing) {
         created.push({ id: String(existing._id), company_url: entry.company_url });
         continue;

@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { ArrowsClockwise } from "@phosphor-icons/react";
 import type { Kit } from "@/types/kit";
-import { Button, TextInput, TextArea, Card, Badge } from "@/components/ui";
+import { Button, TextInput, TextArea, Card, Badge, Spinner, FadeIn } from "@/components/ui";
 
 export function ScheduleSection({
   kit,
@@ -45,14 +46,16 @@ export function ScheduleSection({
           </label>
           <TextInput id="days-input" type="number" min={1} max={120} value={days} onChange={(e) => setDays(Number(e.target.value))} className="w-20" />
           <Button variant="secondary" size="sm" onClick={handleRegenerate} disabled={regenerating}>
+            {regenerating ? <Spinner className="h-3.5 w-3.5" /> : <ArrowsClockwise size={14} />}
             {regenerating ? "Regenerating…" : "Regenerate schedule"}
           </Button>
         </div>
       </div>
 
       <ol className="flex flex-col gap-3">
-        {kit.schedule.days.map((day) => (
-          <Card key={day.day} className="p-4">
+        {kit.schedule.days.map((day, i) => (
+          <FadeIn key={day.day} delay={Math.min(i * 0.03, 0.3)}>
+          <Card className="p-4">
             <div className="flex items-center justify-between gap-3">
               <Badge tone="accent">Day {day.day}</Badge>
               <div className="flex items-center gap-1.5">
@@ -84,6 +87,7 @@ export function ScheduleSection({
               </ul>
             )}
           </Card>
+          </FadeIn>
         ))}
       </ol>
     </section>

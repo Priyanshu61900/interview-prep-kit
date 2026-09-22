@@ -38,6 +38,40 @@ function getConfig() {
  * transient failures, and throwing a typed LlmError the pipeline can catch
  * and record as a skipped/failed step rather than crash the whole run.
  */
+/**
+ * How long to wait after a 429. Groq reports request throttling via
+ * `retry-after` but token-per-minute throttling only via its
+ * `x-ratelimit-reset-*` headers, which carry Go-style durations such as
+ * "7.66s" or "2m59.56s". Reading only `retry-after` meant a TPM limit fell
+ * back to a flat 5s and the run gave up while the window was still closed.
+ */
+export function resetDelayMs(headers: Headers): number {
+  const retryAfter = Number(headers.get("retry-after"));
+  if (Number.isFinite(retryAfter) && retryAfter > 0) return retryAfter * 1000;
+
+  const candidates = [headers.get("x-ratelimit-reset-tokens"), headers.get("x-ratelimit-reset-requests")]
+    .map((v) => (v ? parseDuration(v) : null))
+    .filter((v): v is number => v !== null && v > 0);
+
+  if (candidates.length) return Math.max(...candidates) + 500;
+  return 15_000;
+}
+
+function parseDuration(value: string): number | null {
+  const parts = value.trim().matchAll(/([\d.]+)(ms|h|m|s)/g);
+  let total = 0;
+  let matched = false;
+  for (const [, amount, unit] of parts) {
+    const n = Number(amount);
+    if (!Number.isFinite(n)) continue;
+    matched = true;
+    total += unit === "ms" ? n : unit === "s" ? n * 1000 : unit === "m" ? n * 60_000 : n * 3_600_000;
+  }
+  if (matched) return total;
+  const plain = Number(value);
+  return Number.isFinite(plain) ? plain * 1000 : null;
+}
+
 export async function generateJson<T = unknown>(options: GenerateJsonOptions): Promise<T> {
   const { apiKey, model } = getConfig();
   const { system, prompt, temperature = 0.4, maxOutputTokens = 4096 } = options;
@@ -65,9 +99,7 @@ export async function generateJson<T = unknown>(options: GenerateJsonOptions): P
       });
 
       if (res.status === 429) {
-        const retryAfterHeader = res.headers.get("retry-after");
-        const retryAfterMs = retryAfterHeader ? Number(retryAfterHeader) * 1000 : 5000;
-        throw new RateLimitedError("Groq rate limit hit", retryAfterMs);
+        throw new RateLimitedError("Groq rate limit hit", resetDelayMs(res.headers));
       }
       if (res.status >= 500) {
         throw new RateLimitedError(`Groq transient error ${res.status}`);
@@ -85,8 +117,11 @@ export async function generateJson<T = unknown>(options: GenerateJsonOptions): P
       return content as string;
     },
     {
-      retries: 4,
+      // A tokens-per-minute window can take a full minute to clear, so the
+      // budget has to outlast one, not just a few seconds of request throttling.
+      retries: 6,
       baseDelayMs: 1500,
+      maxDelayMs: 65_000,
       isRetryable: (err) => err instanceof RateLimitedError,
     }
   );

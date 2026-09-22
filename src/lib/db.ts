@@ -26,11 +26,19 @@ function isPlaceholderUri(uri: string): boolean {
  * persist across restarts, but it unblocks local development and the
  * batch/test paths without requiring an Atlas cluster to exist yet.
  */
+// Managed-database integrations name the variable they inject themselves, and
+// the name depends on the prefix chosen when the store is linked. Accept the
+// usual spellings so provisioning through a marketplace integration does not
+// require hand-copying the connection string.
+const URI_VARS = ["MONGODB_URI", "MONGODB_URL", "ATLAS_URL", "DATABASE_URL"] as const;
+
 async function resolveUri(): Promise<string> {
-  const uri = process.env.MONGODB_URI;
-  if (uri && !isPlaceholderUri(uri)) return uri;
+  for (const name of URI_VARS) {
+    const value = process.env[name];
+    if (value && !isPlaceholderUri(value)) return value;
+  }
   if (process.env.NODE_ENV === "production") {
-    throw new Error("MONGODB_URI is not set (or still a placeholder) in production.");
+    throw new Error(`No usable MongoDB connection string in production. Set one of: ${URI_VARS.join(", ")}.`);
   }
 
   const { MongoMemoryServer } = await import("mongodb-memory-server");

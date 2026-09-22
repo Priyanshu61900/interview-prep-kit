@@ -1,6 +1,7 @@
 "use client";
 
 import type { ButtonHTMLAttributes, InputHTMLAttributes, TextareaHTMLAttributes, ReactNode } from "react";
+import { useState, useEffect } from "react";
 import { motion, useReducedMotion, type HTMLMotionProps } from "motion/react";
 import { WarningCircle } from "@phosphor-icons/react";
 
@@ -13,22 +14,22 @@ export function Button({
 }: Omit<HTMLMotionProps<"button">, "ref"> & { variant?: "primary" | "secondary" | "ghost" | "danger"; size?: "sm" | "md" }) {
   const reduce = useReducedMotion();
   const base =
-    "inline-flex items-center justify-center gap-2 font-medium transition-[background-color,border-color,box-shadow] duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] disabled:opacity-50 disabled:cursor-not-allowed";
+    "inline-flex items-center justify-center gap-2 font-medium transition-[transform,box-shadow] duration-160 ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.96] disabled:opacity-50 disabled:cursor-not-allowed relative";
   const isPrimary = variant === "primary";
-  const shape = isPrimary ? "rounded-full" : "rounded-[var(--radius-md)]";
-  const sizes = size === "sm" ? "px-3.5 py-1.5 text-sm" : isPrimary ? "px-5 py-2.5 text-sm" : "px-4 py-2.5 text-sm";
+  const shape = isPrimary ? "rounded-full" : "rounded-xl";
+  const sizes = size === "sm" ? "px-3.5 py-1.5 text-sm" : isPrimary ? "px-6 py-3 text-sm" : "px-4 py-2.5 text-sm";
   const variants: Record<string, string> = {
-    primary: "bg-[var(--color-accent)] text-[var(--color-accent-foreground)] hover:bg-[var(--color-accent-hover)] shadow-[0_1px_0_rgba(255,255,255,0.25)_inset,0_8px_20px_-6px_var(--color-accent)]",
-    secondary: "bg-[var(--color-surface)] text-[var(--color-text)] border border-[var(--color-border-strong)] hover:border-[var(--color-accent)]",
-    ghost: "text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-border)]/60",
-    danger: "bg-[var(--color-danger-soft)] text-[var(--color-danger)] hover:brightness-95",
+    primary: "bg-[var(--color-accent)] text-[var(--color-accent-foreground)] hover:bg-[var(--color-accent-hover)] shadow-lg hover:shadow-xl",
+    secondary: "border border-[var(--color-border)] text-[var(--color-text)] hover:border-[var(--color-border-strong)] hover:bg-[var(--color-surface-raised)]",
+    ghost: "text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface)]/50",
+    danger: "bg-[var(--color-danger)] text-white hover:brightness-110 shadow-lg",
   };
   return (
     <motion.button
       className={`${base} ${shape} ${sizes} ${variants[variant]} ${className}`}
-      whileTap={reduce || props.disabled ? undefined : { scale: 0.97 }}
-      whileHover={reduce || props.disabled || !isPrimary ? undefined : { y: -1 }}
-      transition={{ duration: 0.18, ease: [0.32, 0.72, 0, 1] }}
+      whileTap={reduce || props.disabled ? undefined : { scale: 0.96 }}
+      whileHover={reduce || props.disabled ? undefined : { y: -1 }}
+      transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
       {...props}
     >
       {children}
@@ -37,24 +38,26 @@ export function Button({
 }
 
 const fieldBase =
-  "w-full rounded-[var(--radius-md)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-3.5 py-2.5 text-sm text-[var(--color-text)] transition-[border-color,box-shadow] duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] placeholder:text-[var(--color-text-faint)] focus:border-[var(--color-accent)] focus:shadow-[0_0_0_3px_var(--color-accent-soft)] focus:outline-none";
+  "w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-raised)] px-4 py-3 text-sm text-[var(--color-text)] transition-[border-color,box-shadow,background-color] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] placeholder:text-[var(--color-text-faint)] focus:border-[var(--color-accent)] focus:bg-[var(--color-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/20";
 
 export function TextInput({ className = "", ...props }: InputHTMLAttributes<HTMLInputElement>) {
   return <input className={`${fieldBase} ${className}`} {...props} />;
 }
 
 export function TextArea({ className = "", ...props }: TextareaHTMLAttributes<HTMLTextAreaElement>) {
-  return <textarea className={`${fieldBase} ${className}`} {...props} />;
+  return <textarea className={`${fieldBase} resize-none ${className}`} {...props} />;
 }
 
 export function Card({ className = "", hover = false, children }: { className?: string; hover?: boolean; children: ReactNode }) {
   return (
-    <div
-      className={`rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-card)] [box-shadow:var(--shadow-card),var(--inset-highlight)] transition-[transform,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] ${
-        hover ? "hover:-translate-y-1 hover:border-[var(--color-border-strong)] hover:[box-shadow:var(--shadow-card-hover),var(--inset-highlight)]" : ""
-      } ${className}`}
-    >
-      {children}
+    <div className={`rounded-2xl overflow-hidden ${className}`}>
+      <div className="rounded-2xl border border-[var(--color-border)] bg-gradient-to-br from-[var(--color-surface)] to-[var(--color-surface-raised)] p-1 shadow-lg">
+        <div className={`rounded-[1.5rem] bg-[var(--color-surface)] p-6 ${
+          hover ? "transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:shadow-xl" : ""
+        }`}>
+          {children}
+        </div>
+      </div>
     </div>
   );
 }
@@ -116,12 +119,18 @@ export function Label({ htmlFor, children }: { htmlFor: string; children: ReactN
 
 export function FadeIn({ delay = 0, className = "", children }: { delay?: number; className?: string; children: ReactNode }) {
   const reduce = useReducedMotion();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   return (
     <motion.div
       className={className}
-      initial={reduce ? false : { opacity: 0, y: 12 }}
+      initial={isClient && !reduce ? { opacity: 0, y: 12 } : { opacity: 1, y: 0 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.45, delay, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: 0.45, delay: isClient ? delay / 1000 : 0, ease: [0.16, 1, 0.3, 1] }}
     >
       {children}
     </motion.div>

@@ -50,31 +50,33 @@ export default function DashboardPage() {
   }, [kits, load]);
 
   return (
-    <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
-      <FadeIn>
-        <h1 className="text-3xl font-semibold tracking-tight">Your interview prep kits</h1>
-        <p className="mt-1 text-sm text-[var(--color-text-muted)]">Paste a job description and a company site to generate one.</p>
-      </FadeIn>
+    <main className="min-h-[100dvh] flex flex-col bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-surface)] to-[var(--color-bg)]">
+      <div className="mx-auto w-full max-w-7xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
+        <FadeIn>
+          <div className="mb-20">
+            <h1 className="text-5xl font-bold tracking-tight text-[var(--color-text)]">Interview Prep Kits</h1>
+            <p className="mt-3 text-lg text-[var(--color-text-muted)]">Transform job descriptions into personalized study plans</p>
+          </div>
+        </FadeIn>
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
-        <div>
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-[var(--color-text-faint)]">Kits</h2>
+        <div className="mt-12 grid gap-12 lg:grid-cols-[minmax(0,1fr)_420px]">
+          <div className="space-y-8">
           {listError && <ErrorBanner message={listError} />}
           {kits === null && !listError && (
-            <div className="flex flex-col gap-3">
-              <Skeleton className="h-20 w-full" />
-              <Skeleton className="h-20 w-full" />
-              <Skeleton className="h-20 w-full" />
+            <div className="space-y-4">
+              <Skeleton className="h-24 w-full rounded-xl" />
+              <Skeleton className="h-24 w-full rounded-xl" />
+              <Skeleton className="h-24 w-full rounded-xl" />
             </div>
           )}
           {kits?.length === 0 && (
-            <EmptyState
-              title="No kits yet"
-              description="Create your first one using the form on the right."
-              action={<FolderOpen size={28} className="text-[var(--color-text-faint)]" />}
-            />
+            <div className="rounded-2xl border border-[var(--color-border)] bg-gradient-to-br from-[var(--color-surface)] to-[var(--color-surface-raised)] p-12 text-center">
+              <FolderOpen size={48} className="mx-auto mb-4 text-[var(--color-text-faint)]" />
+              <p className="text-xl font-semibold text-[var(--color-text)]">No kits yet</p>
+              <p className="mt-2 text-[var(--color-text-muted)]">Create your first interview prep kit using the form on the right</p>
+            </div>
           )}
-          <ul className="flex flex-col gap-3">
+          <ul className="space-y-4">
             <AnimatePresence initial={false}>
               {kits?.map((kit, i) => (
                 <KitRow key={kit.id} kit={kit} index={i} onDeleted={load} />
@@ -83,7 +85,7 @@ export default function DashboardPage() {
           </ul>
         </div>
 
-        <div className="flex flex-col gap-6">
+        <div className="space-y-6">
           <FadeIn delay={0.05}>
             <CreateKitForm onCreated={load} />
           </FadeIn>
@@ -230,9 +232,9 @@ function BatchImportForm({ onImported }: { onImported: () => void }) {
 
   return (
     <Card className="p-5">
-      <h2 className="mb-1 font-semibold">Prepare for multiple roles</h2>
+      <h2 className="mb-1 font-semibold">Batch create</h2>
       <p className="mb-4 text-sm text-[var(--color-text-muted)]">
-        Upload a JSON file: an array of <code className="rounded bg-[var(--color-border)] px-1 py-0.5 text-xs">{"{ jd, company_url, days }"}</code> objects.
+        Upload a JSON file with multiple roles.
       </p>
       <form onSubmit={onSubmit} className="flex flex-col gap-3">
         {error && <ErrorBanner message={error} />}

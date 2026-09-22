@@ -4,6 +4,11 @@ Turns a job description + a company website into a structured, editable intervie
 
 Built for the Trao "AI Interview Prep Kit" full-stack assessment.
 
+**Live:** https://interview-prep-kit-one.vercel.app
+**Source:** https://github.com/Priyanshu61900/interview-prep-kit
+
+Frontend and backend are the same Vercel deployment, so both are reachable at that one URL.
+
 ## Tech stack
 
 | Layer | Choice | Why |
@@ -34,7 +39,7 @@ Open http://localhost:3000.
 
 | Variable | Purpose |
 |---|---|
-| `MONGODB_URI` | MongoDB connection string (Atlas free tier, or local `mongod`) |
+| `MONGODB_URI` | MongoDB connection string (Atlas free tier, or local `mongod`). `MONGODB_URL`, `ATLAS_URL` and `DATABASE_URL` are also read, and a managed-database integration that injects a prefixed name (for example `ATLAS_MONGODB_URI`) is detected automatically, so the connection string never has to be copied by hand. Unset locally starts an in-memory MongoDB; required in production |
 | `AUTH_SECRET` | Secret used to sign session JWTs — generate with `openssl rand -hex 32` |
 | `GROQ_API_KEY` | Free-tier API key from [console.groq.com](https://console.groq.com/keys) |
 | `GROQ_MODEL` | Defaults to `openai/gpt-oss-120b` |
@@ -53,19 +58,27 @@ Open http://localhost:3000.
    - Visit [vercel.com](https://vercel.com) and sign in
    - Click "Add New Project" → "Import Git Repository"
    - Select `interview-prep-kit` from your GitHub repos
-   - Set environment variables in Vercel dashboard:
-     - `MONGODB_URI`: MongoDB Atlas connection string
-     - `AUTH_SECRET`: Generate with `openssl rand -hex 32`
-     - `GROQ_API_KEY`: From [console.groq.com](https://console.groq.com/keys)
+   - Set environment variables in the Vercel dashboard:
+     - `AUTH_SECRET`: generate with `openssl rand -hex 32`
+     - `GROQ_API_KEY`: from [console.groq.com](https://console.groq.com/keys)
+     - `GROQ_MODEL`: `openai/gpt-oss-120b`
    - Click "Deploy"
 
-3. **Or deploy from CLI**:
+3. **Attach the database** (Project → Storage → Create Database → MongoDB Atlas):
+   Vercel provisions the cluster and injects the connection string itself under
+   a prefixed name such as `ATLAS_MONGODB_URI`. The app detects it, so the
+   string never has to be copied by hand or pasted into a form. Redeploy once
+   after attaching — existing deployments do not pick up new variables.
+
+   Setting `MONGODB_URI` manually to an Atlas string works just as well.
+
+4. **Or deploy from CLI**:
    ```bash
    npm run build           # Verify build succeeds locally
    vercel --prod          # Deploy to production
    ```
 
-The same environment variables are set in the Vercel project's settings rather than committed. Live URL is provided after deployment.
+Environment variables live in the Vercel project's settings, never in the repository. The deployed instance runs at https://interview-prep-kit-one.vercel.app.
 
 ### Batch entry point (Section 9)
 
@@ -177,6 +190,26 @@ Generation runs in the background via Next's `after()` (Vercel `waitUntil` under
 ## Practice mode ordering
 
 Confidence-weighted, not a full spaced-repetition interval scheduler (`src/app/(app)/kits/[id]/practice/page.tsx`): unattempted cards sort first (they need coverage before anything else), then cards are ordered by the average of their last 3 confidence ratings, ascending. Chosen over an SM-2-style interval algorithm because this is a single-session practice queue, not a persistent daily review system — "drill what you're worst at right now" is both simpler to reason about and closer to how someone actually crams in the days before an interview.
+
+## Key design decisions and trade-offs
+
+Each of these was a real fork, and each cost something.
+
+**Route Handlers instead of a separate Express service.** One deployment, no CORS, one env-var story. Cost: the app is a Next.js monolith, so the backend cannot be hosted independently of the frontend. Justified above under Tech stack.
+
+**Groq over a larger, slower provider.** The pipeline makes many sequential calls, so latency per call compounds; Groq's free tier is genuinely free and fast. Cost: a tight tokens-per-minute budget. A real company site can exhaust a TPM window mid-run, so the client reads Groq's `x-ratelimit-reset-*` headers and waits out a full window rather than failing. That is why a heavy site takes minutes rather than seconds.
+
+**Schedule allocation and coverage checking are plain code, never a prompt.** The brief requires this, and it also makes both testable and deterministic — the same kit always produces the same schedule. Cost: the schedule cannot use judgement a model might have about which topics pair well; it allocates by priority and difficulty only.
+
+**Coverage stops after three passes.** First draft plus at most two gap-filling rounds, with an early exit when a pass fills nothing. Cost: a pathological posting could still ship with an uncovered `nice` requirement. Uncovered `must` requirements are the thing that matters, and those are what the loop targets.
+
+**Confidence-weighted ordering instead of spaced repetition.** Practice is a single cram session before a dated interview, not a long-lived review queue, so "worst first" matches how the tool is actually used. Cost: no retention modelling across days. A proper interval scheduler would be better for a habit; it is wrong for a deadline.
+
+**Origin tracking (`generated` / `edited` / `pinned`) rather than diffing.** Every item carries how it came to exist, so regeneration replaces only `generated` items. Cost: a user who edits an item and later wants the fresh version must delete it — an edit is treated as intent to keep.
+
+**In-memory MongoDB when no connection string is configured.** A clean clone runs, and the batch entry point needs no database at all. Cost: data does not survive a restart locally, and production fails loudly rather than silently falling back.
+
+**Known constraint: serverless function duration.** Generation runs inside the request's `after()` callback with `maxDuration = 60`. Light company sites finish in seconds; a large site with many crawlable pages can exceed 60s on Vercel's Hobby tier and is recorded as `failed` rather than hanging. Raising the plan limit or moving generation to a queue would remove this; both were out of scope for the timebox.
 
 ## Known limitations
 

@@ -1,0 +1,57 @@
+"use client";
+
+import { useState, type FormEvent } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { AuthShell } from "@/components/AuthLayout";
+import { Button, TextInput, Label, ErrorBanner } from "@/components/ui";
+import { api, ApiClientError } from "@/lib/apiClient";
+
+export default function RegisterPage() {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  async function onSubmit(e: FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+    try {
+      await api.post("/api/auth/register", { email, password });
+      router.push("/dashboard");
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof ApiClientError ? err.message : "Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <AuthShell title="Create your account" subtitle="Build interview prep kits from any job posting.">
+      <form onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>
+        {error && <ErrorBanner message={error} />}
+        <div>
+          <Label htmlFor="email">Email</Label>
+          <TextInput id="email" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+        </div>
+        <div>
+          <Label htmlFor="password">Password</Label>
+          <TextInput id="password" type="password" autoComplete="new-password" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} />
+          <p className="mt-1 text-xs text-[var(--color-text-faint)]">At least 8 characters.</p>
+        </div>
+        <Button type="submit" disabled={loading} className="mt-2 w-full">
+          {loading ? "Creating account…" : "Create account"}
+        </Button>
+      </form>
+      <p className="mt-6 text-center text-sm text-[var(--color-text-muted)]">
+        Already have an account?{" "}
+        <Link href="/login" className="font-medium text-[var(--color-accent)] hover:underline">
+          Log in
+        </Link>
+      </p>
+    </AuthShell>
+  );
+}

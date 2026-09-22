@@ -50,7 +50,7 @@ export default function DashboardPage() {
   }, [kits, load]);
 
   return (
-    <main className="min-h-[100dvh] flex flex-col bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-surface)] to-[var(--color-bg)]">
+    <main className="min-h-[100dvh] flex flex-col overflow-x-hidden bg-gradient-to-br from-[var(--color-bg)] via-[var(--color-surface)] to-[var(--color-bg)]">
       <div className="mx-auto w-full max-w-7xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
         <FadeIn>
           <div className="mb-20">
@@ -59,7 +59,7 @@ export default function DashboardPage() {
           </div>
         </FadeIn>
 
-        <div className="mt-12 grid gap-12 lg:grid-cols-[1fr_420px]">
+        <div className="mt-12 grid gap-12 grid-cols-1 lg:grid-cols-[1fr_380px]">
           <div className="space-y-8">
             {listError && <ErrorBanner message={listError} />}
             {kits === null && !listError && (

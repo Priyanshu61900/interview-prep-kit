@@ -81,7 +81,8 @@ export default function PracticePage() {
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (!current) return;
-      const el = e.target as HTMLElement | null;
+      // Guard the cast: a keydown can target document or window, which have no closest().
+      const el = e.target instanceof Element ? e.target : null;
       if (el?.closest('input, textarea, select, [contenteditable="true"]')) return;
 
       if (revealed && e.key >= "1" && e.key <= "5") {

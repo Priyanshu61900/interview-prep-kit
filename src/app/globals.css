@@ -11,8 +11,9 @@
   --color-border-strong: #4a4a4a;
   --color-text: #ededed;
   --color-text-muted: #a8a8a8;
-  /* 4.8:1 on the page background, so helper text and placeholders clear AA. */
-  --color-text-faint: #7a7a7a;
+  /* Tuned against the lightest surface it lands on (#1e1e1e), not the page
+     background, so helper text clears AA on panels too. */
+  --color-text-faint: #8a8a8a;
 
   /* The accent IS the card stock: primary actions look like the card. */
   --color-accent: #f6f1e2;
